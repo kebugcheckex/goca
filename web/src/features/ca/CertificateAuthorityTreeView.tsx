@@ -28,7 +28,7 @@ function CertificateAuthorityTreeView() {
     </TreeItem>
   );
 
-  const onNodeSelect = (event: React.SyntheticEvent, value: string) => {
+  const onNodeSelect = (_: React.SyntheticEvent, value: string) => {
     if (value === ROOT_NODE_NAME) {
       return;
     }

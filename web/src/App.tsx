@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import MenuIcon from '@mui/icons-material/Menu';
 import CertificateAuthorityTreeView from './features/ca/CertificateAuthorityTreeView';
+import CreateCaDialog from './features/ca/CreateCaDialog';
 
 function App() {
   return (
@@ -28,7 +29,17 @@ function App() {
           <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>
-      <CertificateAuthorityTreeView />
+      <Box
+        sx={{
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          marginTop: 2,
+          width: 800,
+        }}
+      >
+        <CertificateAuthorityTreeView />
+        <CreateCaDialog />
+      </Box>
     </Box>
   );
 }
