@@ -6,6 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import MenuIcon from '@mui/icons-material/Menu';
+import CertificateAuthorityTreeView from './features/ca/CertificateAuthorityTreeView';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Button color="inherit">Login</Button>
         </Toolbar>
       </AppBar>
+      <CertificateAuthorityTreeView />
     </Box>
   );
 }
