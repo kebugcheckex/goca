@@ -22,5 +22,6 @@ export type Identity = {
   email: string;
   validFor: number;
   keyBitSize: number;
-  DnsNames: Array<string>;
+  dnsNames: Array<string>;
+  isIntermediate: boolean;
 };

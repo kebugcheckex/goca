@@ -2,6 +2,7 @@ import TreeView from '@mui/lab/TreeView';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import TreeItem from '@mui/lab/TreeItem';
+import Paper from '@mui/material/Paper';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import {
   CATreeNode,
@@ -36,15 +37,17 @@ function CertificateAuthorityTreeView() {
   };
 
   return (
-    <TreeView
-      aria-label="Certificate Authorities"
-      defaultCollapseIcon={<ExpandMoreIcon />}
-      defaultExpandIcon={<ChevronRightIcon />}
-      sx={{ height: 240, flexGrow: 1, maxWidth: 400, overflowY: 'auto' }}
-      onNodeSelect={onNodeSelect}
-    >
-      {renderTree(caTree)}
-    </TreeView>
+    <Paper elevation={1}>
+      <TreeView
+        aria-label="Certificate Authorities"
+        defaultCollapseIcon={<ExpandMoreIcon />}
+        defaultExpandIcon={<ChevronRightIcon />}
+        sx={{ height: 400, flexGrow: 1 }}
+        onNodeSelect={onNodeSelect}
+      >
+        {renderTree(caTree)}
+      </TreeView>
+    </Paper>
   );
 }
 

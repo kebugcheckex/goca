@@ -23,6 +23,7 @@ specifiers:
   react-redux: ^8.0.5
   react-scripts: 5.0.1
   typescript: ^4.9.4
+  use-immer: ^0.8.1
   web-vitals: ^2.1.4
 
 dependencies:
@@ -48,6 +49,7 @@ dependencies:
   react-redux: 8.0.5_yqqa5ithnjtlkxisuaub7c4kpa
   react-scripts: 5.0.1_o77wnou4wwnegu5woljtklrzru
   typescript: 4.9.4
+  use-immer: 0.8.1_immer@9.0.19+react@18.2.0
   web-vitals: 2.1.4
 
 packages:
@@ -10179,6 +10181,16 @@ packages:
     dependencies:
       querystringify: 2.2.0
       requires-port: 1.0.0
+    dev: false
+
+  /use-immer/0.8.1_immer@9.0.19+react@18.2.0:
+    resolution: {integrity: sha512-OfTFf1pL+ICjjcLPn9+ZnaJO/Yg4MBzYZtACEe2mZ/W2A5col28PNUnwowOAaBuOogACOK/37TU17KgsIhUpOw==}
+    peerDependencies:
+      immer: '>=2.0.0'
+      react: ^16.8.0 || ^17.0.1 || ^18.0.0
+    dependencies:
+      immer: 9.0.19
+      react: 18.2.0
     dev: false
 
   /use-sync-external-store/1.2.0_react@18.2.0:
