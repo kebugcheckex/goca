@@ -1,32 +1,77 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { gocaAPI, CertificateAuthorityResponse } from './api';
+import {
+  gocaAPI,
+  CertificateAuthorityResponse,
+  CertificateResponse,
+} from './api';
 
-export const ROOT_NODE_NAME = 'Root CAs';
-
-export interface CATreeNode {
-  name: string;
-  children: Array<CATreeNode>;
-}
-
-export interface CATreeState {
-  caTreeRoot: CATreeNode;
-}
-
-const initialState: CATreeState = {
-  caTreeRoot: { name: ROOT_NODE_NAME, children: [] },
+export type Identity = {
+  country: string;
+  province: string;
+  locality: string;
+  organization: string;
+  organizationUnit: string;
+  email: string;
+  validFor: number;
+  keyBitSize: number;
+  dnsNames: Array<string>;
+  isIntermediate: boolean;
 };
 
-export const fetchRootCAList = createAsyncThunk(
-  'ca/fetchRootCAList',
+export type Certificate = {
+  commonName: string;
+  dnsNames: Array<string>;
+  issueDate: Date;
+  expireDate: Date;
+  serialNumber: string;
+  certificate: string;
+  publicKey: string;
+  privateKey: string | null; // in certain cases, private key is not returned
+  caCertificate: string;
+  csr: string;
+  isCa: boolean;
+  isIntermediateCa: boolean;
+};
+
+export interface CaTreeNode {
+  name: string;
+  children: Array<CaTreeNode>;
+}
+
+export interface CaState {
+  rootCaNames: string[];
+  certificates: Map<string, Certificate>;
+  selectedCertificateName: string | null;
+}
+
+const initialState: CaState = {
+  rootCaNames: [],
+  certificates: new Map<string, Certificate>(),
+  selectedCertificateName: null,
+};
+
+async function fetchCertificates(commonName: string) {
+  const { data } = await gocaAPI<{ data: CertificateAuthorityResponse }>(
+    `api/v1/ca/${commonName}`
+  );
+  // TODO: a lot to fix
+}
+
+export const fetchAllCa = createAsyncThunk('ca/fetchAllCa', async () => {
+  const { data } = await gocaAPI<{ data: Array<string> }>('api/v1/ca');
+});
+
+export const fetchRootCaList = createAsyncThunk(
+  'ca/fetchRootCaList',
   async () => {
     const response = await gocaAPI<{ data: Array<string> }>('api/v1/ca');
     return response.data;
   }
 );
 
-export const fetchCA = createAsyncThunk(
-  'ca/createAsyncThunk',
+export const fetchCa = createAsyncThunk(
+  'ca/fetchCa',
   async (caName: string) => {
     const response = await gocaAPI<{ data: CertificateAuthorityResponse }>(
       `api/v1/ca/${caName}`
@@ -35,52 +80,37 @@ export const fetchCA = createAsyncThunk(
   }
 );
 
-function updateCATree(
-  node: CATreeNode,
-  response: CertificateAuthorityResponse
-) {
-  // TODO This logic is flawed. When the user clicks on a tree node, it is
-  // reloaded. However, all its child nodes are lost, if they were loaded before
-  const index = node.children.findIndex(
-    (treeNode) => treeNode.name === response.common_name
-  );
-  if (index > -1) {
-    node.children[index] = {
-      name: response.common_name,
-      children:
-        response.certificates != null
-          ? response.certificates.map((cert_name) => ({
-              name: cert_name,
-              children: [],
-            }))
-          : [],
-    };
-    return;
-  }
-  node.children.forEach((childNode) => updateCATree(childNode, response));
+export interface FetchCertificateRequest {
+  caName: string;
+  certificateName: string;
 }
+export const fetchCertificate = createAsyncThunk(
+  'ca/fetchCertificate',
+  async (request: FetchCertificateRequest) => {
+    const { caName, certificateName } = request;
+    const response = await gocaAPI<{ data: CertificateResponse }>(
+      `api/v1/ca/${caName}/certificates/${certificateName}`
+    );
+    return response.data;
+  }
+);
 
 export const caSlice = createSlice({
   name: 'ca',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchRootCAList.fulfilled, (state, action) => {
-      state.caTreeRoot = {
-        name: ROOT_NODE_NAME,
-        children: action.payload.map((caName) => ({
-          name: caName,
-          children: [],
-        })),
-      };
+    builder.addCase(fetchRootCaList.fulfilled, (state, action) => {
+      state.rootCaNames = action.payload;
     });
-    builder.addCase(fetchCA.fulfilled, (state, action) => {
-      updateCATree(state.caTreeRoot, action.payload);
-      console.log(`after update`, state.caTreeRoot);
+    builder.addCase(fetchCa.fulfilled, (state, action) => {
+      updateCaTree(state, action.payload);
     });
   },
 });
 
-export const selectCATree = (state: RootState) => state.ca.caTreeRoot;
+export const selectRootCaNames = (state: RootState) => state.ca.rootCaNames;
+export const selectCurrentCertificate = (state: RootState) =>
+  state.ca.selectedCertificateName;
 
 export default caSlice.reducer;

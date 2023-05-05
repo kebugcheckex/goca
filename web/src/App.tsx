@@ -6,8 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import MenuIcon from '@mui/icons-material/Menu';
-import CertificateAuthorityTreeView from './features/ca/CertificateAuthorityTreeView';
-import CreateCaDialog from './features/ca/CreateCaDialog';
+import CertificateAuthorityView from './features/ca/CertificateAuthorityView';
 
 function App() {
   return (
@@ -31,14 +30,12 @@ function App() {
       </AppBar>
       <Box
         sx={{
-          marginLeft: 'auto',
-          marginRight: 'auto',
+          marginLeft: 2,
           marginTop: 2,
           width: 800,
         }}
       >
-        <CertificateAuthorityTreeView />
-        <CreateCaDialog />
+        <CertificateAuthorityView />
       </Box>
     </Box>
   );

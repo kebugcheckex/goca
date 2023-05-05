@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Button from '@mui/material/Button';
+import { css } from '@emotion/css';
 import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
@@ -9,7 +10,6 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 import { useImmer } from 'use-immer';
-import { Identity } from '../../app/DataTypes';
 
 type Props = {};
 
@@ -90,10 +90,11 @@ function CreateCaDialog(_props: Props) {
     <>
       <Dialog onClose={onCloseButtonClick} open={isShown}>
         <DialogTitle>Create a new CA</DialogTitle>
-        <Box sx={{ width: 400, height: 600, padding: 2 }}>
+        <Box sx={{ width: 400, height: 800, padding: 2 }}>
           <FormGroup>
             <TextField
               id="ca-common-name"
+              margin="dense"
               label="Common Name"
               value={caData.commonName}
               onChange={onCommonNameChange}
@@ -109,36 +110,43 @@ function CreateCaDialog(_props: Props) {
             />
             <TextField
               label="Country"
+              margin="dense"
               value={caData.country}
               onChange={onCountryChange}
             />
             <TextField
               label="Province"
+              margin="dense"
               value={caData.province}
               onChange={onProvinceChange}
             />
             <TextField
               label="Locality"
+              margin="dense"
               value={caData.locality}
               onChange={onLocalityChange}
             />
             <TextField
               label="Organization"
+              margin="dense"
               value={caData.organization}
               onChange={onOrganizationChange}
             />
             <TextField
               label="Organization Unit"
+              margin="dense"
               value={caData.organizationUnit}
               onChange={onOrganizationUnitChange}
             />
             <TextField
               label="Email"
+              margin="dense"
               value={caData.email}
               onChange={onEmailChange}
             />
             <TextField
               label="Valid for (days)"
+              margin="dense"
               value={caData.validFor.toString()}
               onChange={onValidForChange}
             />
@@ -149,7 +157,11 @@ function CreateCaDialog(_props: Props) {
           </Button>
         </Box>
       </Dialog>
-      <Button variant="contained" onClick={onCreateCaButtonClick}>
+      <Button
+        sx={{ marginBottom: 2 }}
+        variant="contained"
+        onClick={onCreateCaButtonClick}
+      >
         Create CA
       </Button>
     </>
