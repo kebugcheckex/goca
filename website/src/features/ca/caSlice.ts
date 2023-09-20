@@ -4,6 +4,8 @@ import {
   gocaAPI,
   CertificateAuthorityResponse,
   CertificateResponse,
+  convertCertificateResponseToCertificate,
+  convertCaResponseToCertificate,
 } from './api';
 
 export type Identity = {
@@ -35,19 +37,20 @@ export type Certificate = {
 };
 
 export interface CaTreeNode {
-  name: string;
-  children: Array<CaTreeNode>;
+  commonName: string;
+  parentCommonName: string | null;
+  childCommonNames: string[];
 }
 
 export interface CaState {
-  rootCaNames: string[];
-  certificates: Map<string, Certificate>;
+  caTreeNodes: CaTreeNode[];
+  certificates: { [commonName: string]: Certificate };
   selectedCertificateName: string | null;
 }
 
 const initialState: CaState = {
-  rootCaNames: [],
-  certificates: new Map<string, Certificate>(),
+  caTreeNodes: [],
+  certificates: {},
   selectedCertificateName: null,
 };
 
@@ -62,13 +65,10 @@ export const fetchAllCa = createAsyncThunk('ca/fetchAllCa', async () => {
   const { data } = await gocaAPI<{ data: Array<string> }>('api/v1/ca');
 });
 
-export const fetchRootCaList = createAsyncThunk(
-  'ca/fetchRootCaList',
-  async () => {
-    const response = await gocaAPI<{ data: Array<string> }>('api/v1/ca');
-    return response.data;
-  }
-);
+export const fetchRootCas = createAsyncThunk('ca/fetchRootCas', async () => {
+  const response = await gocaAPI<{ data: string[] }>('api/v1/ca');
+  return response.data;
+});
 
 export const fetchCa = createAsyncThunk(
   'ca/fetchCa',
@@ -100,17 +100,26 @@ export const caSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchRootCaList.fulfilled, (state, action) => {
-      state.rootCaNames = action.payload;
+    builder.addCase(fetchRootCas.fulfilled, (state, action) => {
+      state.caTreeNodes = action.payload.map((commonName) => ({
+        commonName,
+        parentCommonName: null,
+        childCommonNames: [],
+      }));
     });
-    builder.addCase(fetchCa.fulfilled, (state, action) => {
-      updateCaTree(state, action.payload);
-    });
+    builder.addCase(fetchCa.fulfilled, (state, action) => {});
   },
 });
 
-export const selectRootCaNames = (state: RootState) => state.ca.rootCaNames;
-export const selectCurrentCertificate = (state: RootState) =>
-  state.ca.selectedCertificateName;
+export const selectRootCertificateNodes = (state: RootState) =>
+  state.ca.caTreeNodes.filter((node) => node.parentCommonName == null);
+// export const selectCaTreeNodes;
+export const selectCurrentCertificate = (state: RootState) => {
+  const { ca } = state;
+  if (ca.selectedCertificateName == null) {
+    return null;
+  }
+  return ca.certificates[ca.selectedCertificateName];
+};
 
 export default caSlice.reducer;

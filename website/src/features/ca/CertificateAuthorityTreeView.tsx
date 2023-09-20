@@ -3,50 +3,47 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import TreeItem from '@mui/lab/TreeItem';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
-import {
-  CATreeNode,
-  fetchCA,
-  fetchRootCAList,
-  ROOT_NODE_NAME,
-  selectCATree,
-} from './slice';
 import { useEffect } from 'react';
 import Box from '@mui/material/Box';
+import {
+  CaTreeNode,
+  fetchCa,
+  fetchRootCas,
+  selectRootCertificateNodes,
+} from './caSlice';
 
 function CertificateAuthorityTreeView() {
-  const caTree = useAppSelector(selectCATree);
+  const rootCaNodes = useAppSelector(selectRootCertificateNodes);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(fetchRootCAList());
+    dispatch(fetchRootCas());
   }, [dispatch]);
 
-  const renderTree = (node: CATreeNode) => (
-    <TreeItem key={node.name} nodeId={node.name} label={node.name}>
-      {Array.isArray(node.children)
-        ? node.children.map((treeNode) => renderTree(treeNode))
-        : null}
-    </TreeItem>
-  );
+  // const renderTree = (treeNode: CaTreeNode) => (
+  //   <TreeItem key={treeNode.commonName} nodeId={treeNode.commonName} label={treeNode.commonName}>
+  //     {treeNode.childCommonNames.map(childCommonName => renderTree(childCommonName))}
+  //   </TreeItem>
+  // );
 
-  const onNodeSelect = (_: React.SyntheticEvent, value: string) => {
-    if (value === ROOT_NODE_NAME) {
-      return;
-    }
-    dispatch(fetchCA(value));
-  };
+  // const onNodeSelect = (_: React.SyntheticEvent, value: string) => {
+  //   dispatch(fetchCa(value));
+  // };
 
   return (
     <Box>
-      <TreeView
+      Test
+      {/* <TreeView
         aria-label="Certificate Authorities"
         defaultCollapseIcon={<ExpandMoreIcon />}
         defaultExpandIcon={<ChevronRightIcon />}
         sx={{ height: 400, flexGrow: 1 }}
         onNodeSelect={onNodeSelect}
       >
-        {renderTree(caTree)}
-      </TreeView>
+        {Object.keys(certi)
+          .filter((node) => node.parentName == null)
+          .map((node) => renderTreeNode(node))}
+      </TreeView> */}
     </Box>
   );
 }

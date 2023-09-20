@@ -1,7 +1,7 @@
 import Box from '@mui/material/Box';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 // import { CertificateResponse } from './api';
-import { selectCurrentCertificate } from './slice';
+import { selectCurrentCertificate } from './caSlice';
 // import Grid from '@mui/material/Unstable_Grid2';
 
 function CertificateView() {
@@ -13,9 +13,9 @@ function CertificateView() {
   return (
     <Box>
       <ul>
-        <li>Common Name: {certificate.common_name}</li>
-        <li>Issue Date: {certificate.issue_date}</li>
-        <li>Expire Date: {certificate.expire_date}</li>
+        <li>Common Name: {certificate.commonName}</li>
+        <li>Issue Date: {certificate.issueDate.toLocaleString()}</li>
+        <li>Expire Date: {certificate.expireDate.toDateString()}</li>
       </ul>
     </Box>
   );
